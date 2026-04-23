@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.4
 # parameters
-ARG EXERCISE_NAME="<LX_NAME_HERE>"
-ARG DESCRIPTION="VSCode - <DESCRIPTION_HERE>"
-ARG MAINTAINER="<YOUR_FULL_NAME> (<YOUR_EMAIL_ADDRESS>)"
+ARG EXERCISE_NAME="lx-lane-following"
+ARG DESCRIPTION="VSCode - lx-lane-following"
+ARG MAINTAINER="Liam P liam@duckietown.com"
 
 # ==================================================>
 # ==> Do not change the code below this line
@@ -34,7 +34,7 @@ ARG TARGETVARIANT
 RUN dt-build-env-check "${EXERCISE_NAME}" "${MAINTAINER}" "${DESCRIPTION}"
 
 # define/create repository path
-ARG REPO_PATH="${CATKIN_WS_DIR}/src/${EXERCISE_NAME}"
+ARG REPO_PATH="/code/src/${EXERCISE_NAME}"
 RUN mkdir -p "${REPO_PATH}"
 WORKDIR "${REPO_PATH}"
 
