@@ -1,1 +1,5 @@
 # LIST YOUR APT PACKAGES HERE
+
+# provides the `dot` binary used by the python `graphviz` package to render
+# the FSM state diagram in notebooks/05_finite_state_machine.ipynb
+graphviz

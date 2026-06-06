@@ -1,1 +1,5 @@
 # LIST YOUR PYTHON3 PACKAGES HERE
+
+# python binding for graphviz; renders the FSM state diagram in
+# notebooks/05_finite_state_machine.ipynb (needs the apt `graphviz` package)
+graphviz
