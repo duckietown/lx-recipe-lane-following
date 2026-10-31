@@ -3,5 +3,12 @@
 # python binding for graphviz; renders the FSM state diagram in
 # notebooks/05_finite_state_machine.ipynb (needs the apt `graphviz` package)
 graphviz
+
+# line detection / ground projection / lane filter helpers used by the notebooks
 lib-dt-computer-vision
 lib-dt-state-estimation
+
+# notebook panels (lx_ros2_tools.panel): live images, plots and parameter sliders
+ipywidgets
+ipympl
+matplotlib

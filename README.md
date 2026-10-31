@@ -1,52 +1,61 @@
-# LX Recipe: <LX_TITLE_HERE>
+# LX Recipe: Lane Following (ROS 2)
 
-TODO: add information that is useful for instructors
+Recipe for the [lx-lane-following](https://github.com/duckietown/lx-lane-following) learning experience on the
+ROS 2 (Jazzy, `rmw_zenoh_cpp`) Duckietown stack, `ente` distro.
 
-# How to Create an LX Recipe
+## How this LX is different
 
-The LX recipe contains components of the exercise that the student should
-not need to change and are effectively hidden from view. There are a few
-files here that will require some attention in the creation of the learning
-experience
+This LX does **not** run its code through `dts code workbench`. It teaches the `dts devel` workflow on the
+core lane-following stack, which the LX vendors as the git submodule `packages/dt-ros2-core`
+([dt-ros2-core](https://github.com/duckietown/dt-ros2-core), branch `ente`). Students build and run it with:
+
+```bash
+cd packages/dt-ros2-core
+dts devel build -H ROBOT_NAME
+dts devel run -H ROBOT_NAME -L lane-following     # launchers/lane-following.sh
+```
+
+after bringing the ROS 2 stack up on the robot (`dts stack up -R ROBOT_NAME ros2/duckiebot` and
+`dts stack up -R ROBOT_NAME ros2-core/default`).
+
+Consequences for this recipe:
+
+- `launchers/default.sh` only prints a message pointing at the `dts devel` workflow (it sources
+  `/environment.sh` and exits cleanly), so `dts code workbench` is harmless but useless here.
+- The LX ships a `.dockerignore` that excludes `packages/dt-ros2-core` from the `meat` build context: the
+  workbench image (`Dockerfile`, based on `dt-ros2-commons`) runs `colcon build` over everything under
+  `packages/`, and the whole core stack (plus its apt/pip dependencies, duckiedrone packages included) must not
+  be built into the exercise image. The submodule is built by `dts devel build` on the robot instead.
+- The editor image (`Dockerfile.vscode`) is where the notebooks run: it carries ROS 2 Jazzy, the
+  `duckietown_msgs` and the `lx_ros2_tools` notebook panels (`RosSession`, `ImageView`, `TopicPlot`,
+  `ParamPanel`) so that the notebooks can look at the robot's debug images and tune parameters live, and the
+  integrated terminal has the `ros2` CLI connected to the robot's zenoh router.
+
+## Files
+
+| File | Role |
+|---|---|
+| `Dockerfile` | workbench image (`dt-ros2-commons` base, ROS 2 template) |
+| `Dockerfile.vscode` | editor image (`dt-vscode` base + ROS 2 Jazzy, template) |
+| `dependencies-apt.txt` | apt deps of the workbench image (`graphviz` for the FSM diagram) |
+| `dependencies-apt.vscode.txt` | apt deps of the editor image (ROS 2 Jazzy packages, `graphviz`) |
+| `dependencies-py3.txt` | pip deps of both images: `graphviz`, `lib-dt-computer-vision`, `lib-dt-state-estimation` (notebook 03), `ipywidgets`, `ipympl`, `matplotlib` (panels) |
+| `launchers/default.sh` | message launcher (see above) |
+| `packages/lx_ros2_tools/` | shared notebook helpers (verbatim copy, do not edit here) |
+| `assets/vscode/setup.sh`, `assets/vscode/launch.sh` | editor setup hooks (README at startup, widgets, ROS 2 in the terminal, colcon output dirs) |
+| `assets/duckiematrix/` | Duckiematrix map used by `dts code start_matrix` (`settings.yaml`) |
 
 ## Dependencies
 
-Specify any `apt` or `python` dependencies needed in the 
-[dependencies-apt.txt](./dependencies-apt.txt) and 
-[dependencies-py3.txt](./dependencies-py3.txt) respectively. 
+Specify any `apt` or `python` dependencies needed in [dependencies-apt.txt](./dependencies-apt.txt),
+[dependencies-apt.vscode.txt](./dependencies-apt.vscode.txt) and [dependencies-py3.txt](./dependencies-py3.txt).
+`dependencies-py3.txt` is installed in both images.
 
-## Base Image
-
-You need to specify a `BASE_IMAGE` in the [Dockerfile](./Dockerfile). This
-choice defines what is already in the docker image and can be used in the 
-running of the exercise.
-
-Reasonable choices could be:
-
- - [`dt-commons`](https://github.com/duckietown/dt-commons): likely a good choice
-if the LX is pure python and doesn't require ROS.
- - [`dt-ros-commons`](https://github.com/duckietown/dt-ros-commons): likely
-a good choice if you would like to use ROS in a standalone fashion (i.e., 
-your exercise includes all the nodes that are needed)
- - [`dt-core`](https://github.com/duckietown/dt-core): a good choice if you 
-would like to use one or more of the nodes defined in the packages 
-in the `dt-core` repository. 
-
-Coming soon:
- - ROS2 base image
- - Machine learning base image
-
-## Duckiematrix 
+## Duckiematrix
 
 By default, each LX is compatible with the [Duckiematrix](https://docs.duckietown.com/ente/devmanual-duckiematrix/intro.html).
 See the [README in the LX template](https://github.com/duckietown/template-lx/blob/ente/README.md)
-for more details on how to deploy this capability through the `dts code` API. 
-You can define the exact configuration of the Duckiematrix environment in the 
+for more details on how to deploy this capability through the `dts code` API.
+You can define the exact configuration of the Duckiematrix environment in the
 [assets/duckiematrix](./assets/duckiematrix) directory. For more details see
 [the Duckiematrix manual](https://docs.duckietown.com/ente/devmanual-duckiematrix/intro.html).
-
-## noVNC Customization
-
-It is also possible to customize the noVNC desktop. 
-TODO: add details. 
-
