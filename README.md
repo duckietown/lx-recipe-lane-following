@@ -15,8 +15,8 @@ dts devel build -H ROBOT_NAME
 dts devel run -H ROBOT_NAME -L lane-following     # launchers/lane-following.sh
 ```
 
-after bringing the ROS 2 stack up on the robot (`dts stack up -R ROBOT_NAME ros2/duckiebot` and
-`dts stack up -R ROBOT_NAME ros2-core/default`).
+after bringing the ROS 2 stack up on the robot (`dts stack up -H ROBOT_NAME ros2/duckiebot` and
+`dts stack up -H ROBOT_NAME ros2-core/default`).
 
 Consequences for this recipe:
 
